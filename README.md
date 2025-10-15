@@ -31,6 +31,9 @@ opcua-server/
 │
 ├── OPC-UA-SERVER-STATUS.md     # Complete server documentation & status
 ├── NODE-CONFIGURATION.md       # Detailed node configuration guide
+├── PRODUCTION-ACCESS-GUIDE.md  # 🔒 Production access & security guide
+├── PRODUCTION-CREDENTIALS.txt  # 🔒 Production credentials (NOT in git)
+├── deploy-production.sh        # Production deployment script
 │
 └── .env.example                # Environment variables template
 ```
@@ -43,9 +46,33 @@ The following components exist in the development environment but are **NOT** ac
 - Web stack (Node-RED, Nginx reverse proxy)
 - Portainer (removed, SSH management used instead)
 
+## 🔐 Server Modi
+
+Der Server kann in zwei Modi betrieben werden:
+
+### Development Mode (Aktuell)
+- ✅ Anonymous Authentication (keine Credentials nötig)
+- ⚠️ Schwache Sicherheit
+- ✅ Einfaches Testing
+- 📝 Konfiguration: `server/docker-compose.yml`
+
+### Production Mode (Empfohlen für echten Betrieb)
+- 🔒 Zertifikats-basierte Authentifizierung (wie S7-1500)
+- ✅ Security: Basic256Sha256, SignAndEncrypt
+- ❌ Keine anonyme Verbindung
+- 📝 Konfiguration: `server/docker-compose.production.yml`
+- 📖 **Siehe:** [PRODUCTION-ACCESS-GUIDE.md](./PRODUCTION-ACCESS-GUIDE.md)
+
+**Production Mode aktivieren:**
+```bash
+sudo ./deploy-production.sh
+```
+
+---
+
 ## Quick Start
 
-### 1. Server Deployment
+### 1. Server Deployment (Development Mode)
 
 ```bash
 # Clone repository
@@ -85,21 +112,42 @@ See [OPC-UA-SERVER-STATUS.md](./OPC-UA-SERVER-STATUS.md) for complete client dev
 
 ## Security Configuration
 
-Current production security setup:
+### System Security (Aktiv)
 
 - **Firewall (UFW):** Port 4840 (OPC-UA) and 22 (SSH with rate limiting)
 - **Fail2ban:** Active SSH intrusion prevention
 - **Kernel Hardening:** SYN flood protection, IP spoofing protection
-- **Docker:** Rootless mode (optional, not yet configured)
 
-### Development Mode Settings
+### OPC-UA Server Security
 
-⚠️ **Currently in development mode:**
-- Anonymous authentication: ENABLED
-- Certificate auto-accept: ENABLED
-- Username/password: ENABLED (with weak dev credentials)
+#### 🟡 Development Mode (Aktuell aktiv)
 
-**For production:** Disable anonymous authentication and configure proper certificate validation.
+⚠️ **Nur für Testing und Entwicklung:**
+- Anonymous authentication: ✅ ENABLED
+- Certificate requirement: ❌ Optional
+- Encryption: ❌ Optional
+- **Verbindung:** Kein Passwort/Zertifikat nötig
+
+**Verwendung:** Testing, Entwicklung, Demo
+
+#### 🟢 Production Mode (Verfügbar)
+
+✅ **Empfohlen für produktiven Betrieb:**
+- Anonymous authentication: ❌ DISABLED
+- Certificate requirement: ✅ REQUIRED (X.509)
+- Encryption: ✅ SignAndEncrypt (Basic256Sha256)
+- **Verbindung:** Client-Zertifikat erforderlich
+
+**Konfiguration wie Siemens S7-1500 OPC-UA Server**
+
+**Aktivieren:**
+```bash
+sudo ./deploy-production.sh
+```
+
+**Dokumentation:**
+- 📖 [PRODUCTION-ACCESS-GUIDE.md](./PRODUCTION-ACCESS-GUIDE.md) - Zugangs-Anleitung
+- 🔑 [PRODUCTION-CREDENTIALS.txt](./PRODUCTION-CREDENTIALS.txt) - Zugangsdaten
 
 ## Service Management
 
@@ -135,12 +183,16 @@ See **[NODE-CONFIGURATION.md](./NODE-CONFIGURATION.md)** for:
 
 ## Documentation
 
+### Server-Dokumentation
+
 - **[OPC-UA-SERVER-STATUS.md](./OPC-UA-SERVER-STATUS.md)** - Complete server documentation
-  - Server access and credentials
+  - Server access and system credentials
   - Service management
   - Security configuration
   - Python client development guide
   - Troubleshooting
+
+### Node-Konfiguration
 
 - **[NODE-CONFIGURATION.md](./NODE-CONFIGURATION.md)** - Node configuration guide
   - Current node configuration (85 nodes)
@@ -149,6 +201,20 @@ See **[NODE-CONFIGURATION.md](./NODE-CONFIGURATION.md)** for:
   - Custom node creation via JSON
   - Example configurations for different use cases
   - Node discovery and performance tuning
+
+### 🔒 Production Security
+
+- **[PRODUCTION-ACCESS-GUIDE.md](./PRODUCTION-ACCESS-GUIDE.md)** - Production access guide
+  - Certificate-based authentication (wie S7-1500)
+  - Client-Zertifikat erstellen
+  - Python/Node.js/UaExpert Beispiele
+  - Security Policies (Basic256Sha256, SignAndEncrypt)
+  - Troubleshooting
+
+- **[PRODUCTION-CREDENTIALS.txt](./PRODUCTION-CREDENTIALS.txt)** - Access credentials
+  - User-Rollen (Reader, Operator, Admin)
+  - Sichere Passwörter
+  - ⚠️ NICHT im Git-Repository (lokal aufbewahren!)
 
 ## System Requirements
 

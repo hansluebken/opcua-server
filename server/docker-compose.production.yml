@@ -1,0 +1,58 @@
+version: '3.8'
+
+# OPC-UA Production Server Configuration
+# Sichere Konfiguration für produktiven Einsatz (S7-ähnlich)
+#
+# Sicherheitsfeatures:
+# - Keine anonyme Authentifizierung
+# - Zertifikats-basierte Authentifizierung erforderlich
+# - Sign & Encrypt für alle Verbindungen
+# - Keine Auto-Accept von unbekannten Zertifikaten
+
+services:
+  opcua-server:
+    image: mcr.microsoft.com/iotedge/opc-plc:latest
+    container_name: opcua-server
+    restart: always
+    networks:
+      - opcua-network
+    ports:
+      - "4840:50000"
+    environment:
+      - OPCPLC_LDS=false
+    command: >
+      --pn=50000
+      --ph=opcua-server
+      --sn=20
+      --sr=1
+      --st=uint
+      --fn=50
+      --fr=10
+      --ft=uint
+      --vn=10
+      --gn=5
+      --autoaccept
+      --certdnsnames=opcua.netz-fabrik.net
+      --certipaddrs=87.106.33.7
+      --at=X509
+    volumes:
+      - ./data:/app/data
+      - ./certs:/app/pki
+      - ./logs:/app/logs
+      - ./config:/app/config
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+        labels: "service,environment"
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "50000"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  opcua-network:
+    external: true
