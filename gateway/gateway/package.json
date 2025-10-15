@@ -1,0 +1,15 @@
+{
+  "name": "opcua-security-gateway",
+  "version": "1.0.0",
+  "description": "OPC-UA Security Gateway with S7-1500 like authentication",
+  "main": "gateway.js",
+  "scripts": {
+    "start": "node gateway.js"
+  },
+  "dependencies": {
+    "node-opcua": "^2.119.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

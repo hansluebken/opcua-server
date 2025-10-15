@@ -1,0 +1,34 @@
+[Unit]
+Description=OPC-UA Production Gateway with S7-1500 Security
+Documentation=https://github.com/hansluebken/opcua-server
+After=docker.service network-online.target
+Requires=docker.service
+StartLimitIntervalSec=60
+StartLimitBurst=3
+
+[Service]
+Type=forking
+User=opcua-operator
+Group=opcua-team
+WorkingDirectory=/opt/opcua/gateway
+
+# Pre-start checks
+ExecStartPre=/usr/bin/docker network inspect opcua-network || /usr/bin/docker network create opcua-network
+ExecStartPre=/usr/bin/docker compose down
+
+# Start containers
+ExecStart=/usr/bin/docker compose up -d
+
+# Stop
+ExecStop=/usr/bin/docker compose down
+
+# Restart policy
+Restart=on-failure
+RestartSec=10s
+
+# Security
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

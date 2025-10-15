@@ -1,0 +1,71 @@
+version: '3.8'
+
+# OPC-UA Production Setup with Security Gateway
+# Architecture:
+#   Client → Gateway (Port 4840, S7-like security) → OPC PLC Simulator (internal)
+
+services:
+  # OPC-UA Simulator (internal only, not exposed)
+  opcua-simulator:
+    image: mcr.microsoft.com/iotedge/opc-plc:latest
+    container_name: opcua-simulator
+    restart: always
+    user: root
+    networks:
+      - opcua-internal
+    # NO external port exposure!
+    expose:
+      - "4841"
+    environment:
+      - OPCPLC_LDS=false
+    command: >
+      --pn=4841
+      --autoaccept
+      --sn=20
+      --sr=1
+      --st=uint
+      --fn=50
+      --fr=10
+      --ft=uint
+      --pki=/app/pki
+    volumes:
+      - ./simulator-data:/app/data
+      - ./simulator-pki:/app/pki
+      - ./simulator-logs:/app/logs
+
+  # OPC-UA Security Gateway (S7-1500 like security)
+  opcua-gateway:
+    image: node:20-alpine
+    container_name: opcua-gateway
+    restart: always
+    working_dir: /app
+    networks:
+      - opcua-internal
+      - opcua-network
+    ports:
+      - "4840:4840"
+    environment:
+      - NODE_ENV=production
+      - BACKEND_ENDPOINT=opc.tcp://opcua-simulator:4841
+      - GATEWAY_PORT=4840
+      - REQUIRE_CERTIFICATE=true
+      - ALLOW_ANONYMOUS=false
+    volumes:
+      - ./gateway:/app
+      - ./gateway-pki:/app/pki
+      - ./gateway-logs:/app/logs
+    command: sh -c "npm install && node gateway.js"
+    depends_on:
+      - opcua-simulator
+    healthcheck:
+      test: ["CMD", "nc", "-zv", "localhost", "4840"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+networks:
+  opcua-internal:
+    driver: bridge
+  opcua-network:
+    external: true
