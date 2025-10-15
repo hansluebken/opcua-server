@@ -30,6 +30,7 @@ opcua-server/
 ├── ssl/                        # SSL/TLS certificates
 │
 ├── OPC-UA-SERVER-STATUS.md     # Complete server documentation & status
+├── NODE-CONFIGURATION.md       # Detailed node configuration guide
 │
 └── .env.example                # Environment variables template
 ```
@@ -117,13 +118,20 @@ journalctl -u opcua-server.service -f
 
 ## Node Configuration
 
-The server provides the following nodes:
+The server provides **85 simulated nodes** across multiple types:
 
-- **Fast Nodes:** 70 nodes (namespace `ns=2;s=Fast.UInt.*`)
-- **GUID Nodes:** 5 nodes (namespace `ns=2;s=Guid.*`)
-- **Bad Nodes:** 2 nodes (error simulation)
-- **Update Rate:** 100ms (configurable)
-- **Alarms:** Enabled
+- **Slow Nodes:** 20 nodes (update every 1s, namespace `ns=2;s=Slow.UInt.*`)
+- **Fast Nodes:** 50 nodes (update every 10s, namespace `ns=2;s=Fast.UInt.*`)
+- **Volatile Nodes:** 10 nodes (on-demand values, namespace `ns=2;s=Volatile.*`)
+- **GUID Nodes:** 5 nodes (deterministic GUIDs, namespace `ns=2;s=Guid.*`)
+
+**📖 For detailed node configuration and customization:**
+See **[NODE-CONFIGURATION.md](./NODE-CONFIGURATION.md)** for:
+- Complete parameter reference
+- How to modify node counts, types, and update rates
+- Custom node creation via JSON
+- Example configurations for different scenarios
+- Node discovery and troubleshooting
 
 ## Documentation
 
@@ -133,6 +141,14 @@ The server provides the following nodes:
   - Security configuration
   - Python client development guide
   - Troubleshooting
+
+- **[NODE-CONFIGURATION.md](./NODE-CONFIGURATION.md)** - Node configuration guide
+  - Current node configuration (85 nodes)
+  - All command-line parameters explained
+  - How to customize nodes (count, type, rate)
+  - Custom node creation via JSON
+  - Example configurations for different use cases
+  - Node discovery and performance tuning
 
 ## System Requirements
 
