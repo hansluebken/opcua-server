@@ -174,7 +174,13 @@ Der Server stellt **85 Nodes** über den Backend-Simulator bereit:
 
 ### Für Client-Entwickler
 
-**[ZERTIFIKATE-ERSTELLEN.md](./ZERTIFIKATE-ERSTELLEN.md)** - Zertifikats-Anleitung ✨ NEU
+**[ZUGANGSDATEN-DOWNLOAD.md](./ZUGANGSDATEN-DOWNLOAD.md)** - Zugangsdaten herunterladen ✨ NEU
+- **SCP-Download:** Credentials, Zertifikate, Dokumentation
+- Komplettes Access-Package (ZIP)
+- Git Clone (empfohlen)
+- Quick Start nach Download
+
+**[ZERTIFIKATE-ERSTELLEN.md](./ZERTIFIKATE-ERSTELLEN.md)** - Zertifikats-Anleitung
 - **Zertifikate sind PFLICHT!** (nicht optional)
 - Automatisch generiert (Python asyncua)
 - Manuell mit OpenSSL erstellen
