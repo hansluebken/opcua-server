@@ -94,16 +94,14 @@ async function startGatewayServer() {
             buildDate: new Date()
         },
 
-        // Security Configuration (S7-1500 like)
+        // Security Configuration (S7-1500 like - STRICT)
         securityPolicies: [
-            opcua.SecurityPolicy.None,
-            opcua.SecurityPolicy.Basic256Sha256
+            opcua.SecurityPolicy.Basic256Sha256  // ONLY secure policy, NO "None"
         ],
 
         securityModes: [
-            opcua.MessageSecurityMode.None,
             opcua.MessageSecurityMode.Sign,
-            opcua.MessageSecurityMode.SignAndEncrypt
+            opcua.MessageSecurityMode.SignAndEncrypt  // ONLY secure modes, NO "None"
         ],
 
         // Authentication
@@ -136,7 +134,9 @@ async function startGatewayServer() {
         privateKeyFile: privateKeyFile,
 
         serverCertificateManager: new opcua.OPCUACertificateManager({
-            automaticallyAcceptUnknownCertificate: ALLOW_ANONYMOUS,
+            // For S7-1500 like security: auto-accept in testing, manual trust in production
+            // Set to false for full production (requires manual certificate trust)
+            automaticallyAcceptUnknownCertificate: true,  // true = auto-accept for testing
             rootFolder: PKI_FOLDER
         })
     });

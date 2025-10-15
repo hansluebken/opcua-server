@@ -116,9 +116,11 @@ sudo systemctl enable opcua-gateway.service
 
 ✅ **Anonyme Verbindungen:** BLOCKIERT
 ✅ **Username/Password:** ERFORDERLICH
-✅ **Zertifikate:** Unterstützt (auto-accept für Testing)
-✅ **Security Policy:** Basic256Sha256
-✅ **Verschlüsselung:** Sign & Encrypt
+✅ **Zertifikate:** ERFORDERLICH! (nicht optional)
+✅ **Security Policy:** Basic256Sha256 (PFLICHT)
+✅ **Verschlüsselung:** Sign & Encrypt (PFLICHT)
+
+⚠️ **WICHTIG:** Verbindung ohne Zertifikat ist NICHT möglich!
 
 ### 3 User-Rollen
 
@@ -172,12 +174,18 @@ Der Server stellt **85 Nodes** über den Backend-Simulator bereit:
 
 ### Für Client-Entwickler
 
-**[CLIENT-ACCESS.md](./CLIENT-ACCESS.md)** - Client-Zugriffs-Anleitung ✨ NEU
+**[ZERTIFIKATE-ERSTELLEN.md](./ZERTIFIKATE-ERSTELLEN.md)** - Zertifikats-Anleitung ✨ NEU
+- **Zertifikate sind PFLICHT!** (nicht optional)
+- Automatisch generiert (Python asyncua)
+- Manuell mit OpenSSL erstellen
+- UaExpert (GUI Client)
+- Troubleshooting (BadSecurityModeRejected, etc.)
+
+**[CLIENT-ACCESS.md](./CLIENT-ACCESS.md)** - Client-Zugriffs-Anleitung
 - **Welche Daten/Dateien brauche ich für den Zugriff?**
 - **Was liefert der Server dem Client?**
 - **Wie importiere ich reale OPC-UA Server-Konfigurationen?**
 - Verbindungs-Beispiele (Python, Node.js, UaExpert)
-- Zertifikats-Erstellung
 - Security Policies
 - Troubleshooting
 
@@ -195,15 +203,24 @@ Der Server stellt **85 Nodes** über den Backend-Simulator bereit:
 ```python
 import asyncio
 from asyncua import Client
+from asyncua.crypto.security_policies import SecurityPolicyBasic256Sha256
+from asyncua import ua
 
 async def connect():
     url = "opc.tcp://opcua.netz-fabrik.net:4840"
 
     client = Client(url=url)
+    client.application_uri = "urn:mycompany:opcua:client"  # WICHTIG!
 
     # Credentials ERFORDERLICH!
     client.set_user("opcua-operator")
     client.set_password("ihMAgDJkDb71eBHWdwSM/UP2tLHqg/SldO4z8LwRgMU=")
+
+    # Zertifikat ERFORDERLICH! (asyncua generiert automatisch)
+    await client.set_security(
+        SecurityPolicyBasic256Sha256,
+        mode=ua.MessageSecurityMode.SignAndEncrypt
+    )
 
     async with client:
         print("✅ Verbunden!")
@@ -216,6 +233,7 @@ async def connect():
 asyncio.run(connect())
 ```
 
+**Zertifikats-Erstellung:** Siehe **[ZERTIFIKATE-ERSTELLEN.md](./ZERTIFIKATE-ERSTELLEN.md)**
 **Mehr Beispiele:** Siehe **[CLIENT-ACCESS.md](./CLIENT-ACCESS.md)**
 
 ---

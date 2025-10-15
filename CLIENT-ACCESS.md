@@ -29,17 +29,20 @@ Um auf den OPC-UA Server zuzugreifen, benötigst du:
 
    **Quelle:** `PRODUCTION-CREDENTIALS.txt` (lokal auf Server, **NICHT** in Git)
 
-3. **OPC-UA Client-Library**
+3. **Client-Zertifikat** (X.509) - ✅ **ERFORDERLICH!** (nicht optional!)
+   - Siehe **[ZERTIFIKATE-ERSTELLEN.md](./ZERTIFIKATE-ERSTELLEN.md)** für Anleitung
+   - Automatisch generiert von asyncua ODER manuell mit OpenSSL erstellen
+   - Muss SubjectAlternativeName (SAN) enthalten!
+
+4. **Security Policy** - `Basic256Sha256` ✅ **ERFORDERLICH!** (nicht optional!)
+
+5. **Security Mode** - `SignAndEncrypt` (empfohlen) oder `Sign` ✅ **ERFORDERLICH!**
+
+6. **OPC-UA Client-Library**
    - Python: `asyncua` (empfohlen) oder `opcua-client`
    - Node.js: `node-opcua`
    - C#: `OPCFoundation.NetStandard.Opc.Ua`
    - GUI: UaExpert (Unified Automation)
-
-#### 🔒 Optional (für erweiterte Sicherheit)
-
-4. **Client-Zertifikat** (X.509) - wird automatisch erstellt, wenn nicht vorhanden
-5. **Security Policy** - `Basic256Sha256` (Standard)
-6. **Security Mode** - `SignAndEncrypt` (empfohlen) oder `Sign`
 
 ### Zusammenfassung: Daten-Checkliste
 
@@ -48,9 +51,13 @@ Um auf den OPC-UA Server zuzugreifen, benötigst du:
 ✅ Username: opcua-operator (oder reader/admin)
 ✅ Password: ihMAgDJkDb71eBHWdwSM/UP2tLHqg/SldO4z8LwRgMU=
 ✅ Client-Library: asyncua (Python) / node-opcua (Node.js)
-☑️ Zertifikat: Automatisch generiert (optional manuell)
-☑️ Security Policy: Basic256Sha256 (optional)
+✅ Zertifikat: ERFORDERLICH! (automatisch generiert oder manuell erstellen)
+✅ Security Policy: Basic256Sha256 (ERFORDERLICH!)
+✅ Security Mode: SignAndEncrypt oder Sign (ERFORDERLICH!)
 ```
+
+⚠️ **WICHTIG:** Ohne Zertifikat und sichere Security Policy ist KEINE Verbindung möglich!
+Siehe **[ZERTIFIKATE-ERSTELLEN.md](./ZERTIFIKATE-ERSTELLEN.md)** für Details.
 
 ---
 
