@@ -1,0 +1,62 @@
+# Environment variables
+.env
+*.env
+!.env.example
+
+# Runtime data
+server/data/*
+!server/data/.gitkeep
+server/logs/*
+!server/logs/.gitkeep
+server/certs/*
+!server/certs/.gitkeep
+
+# SSL certificates (private keys)
+ssl/*.key
+ssl/*.pem
+*.pfx
+*.p12
+
+# Docker volumes
+docker-volumes/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+*.egg-info/
+.eggs/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+*.bak
+*.tmp
+
+# Credentials
+*credentials*.txt
+*password*.txt
+*secret*.txt
+
+# Backup files
+backup/
+*.backup
+*.old
