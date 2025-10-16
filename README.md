@@ -187,6 +187,19 @@ Der Server stellt **85 Nodes** über den Backend-Simulator bereit:
 - UaExpert (GUI Client)
 - Troubleshooting (BadSecurityModeRejected, etc.)
 
+**[ZERTIFIKATE-UNIVERSAL.md](./ZERTIFIKATE-UNIVERSAL.md)** - Universelle Zertifikate ✨ NEU
+- **Für JEDEN OPC-UA Server:** node-opcua, Siemens, UA SDK, etc.
+- **Das Problem:** Verschiedene Server benötigen unterschiedliche Extensions
+- **Die Lösung:** Drei Zertifikat-Varianten (CA:TRUE vs CA:FALSE)
+- Schritt-für-Schritt Anleitungen für alle Server-Typen
+- Migration von asyncua-Zertifikaten
+
+**[ZERTIFIKAT-QUICK-REFERENCE.md](./ZERTIFIKAT-QUICK-REFERENCE.md)** - Schnell-Referenz
+- Welches Zertifikat für welchen Server?
+- Zwei Haupt-Varianten (CA:TRUE vs CA:FALSE)
+- Schnell-Befehle zum Erstellen
+- Fehlerdiagnose kompakt
+
 **[CLIENT-ACCESS.md](./CLIENT-ACCESS.md)** - Client-Zugriffs-Anleitung
 - **Welche Daten/Dateien brauche ich für den Zugriff?**
 - **Was liefert der Server dem Client?**
