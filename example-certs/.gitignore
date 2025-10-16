@@ -1,0 +1,3 @@
+
+# Client Certificate Examples - OpenSSL Config files
+example-certs/*.cnf

@@ -1,0 +1,19 @@
+[req]
+default_bits = 2048
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+
+[req_distinguished_name]
+CN = OPC-UA Test Client
+O = Netz-Fabrik
+C = DE
+
+[v3_req]
+keyUsage = critical, digitalSignature, keyEncipherment, dataEncipherment
+extendedKeyUsage = clientAuth
+subjectAltName = @alt_names
+
+[alt_names]
+URI.1 = urn:opcua-test-client
+DNS.1 = localhost

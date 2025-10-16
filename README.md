@@ -200,6 +200,26 @@ Der Server stellt **85 Nodes** über den Backend-Simulator bereit:
 - Node-Parameter und Customization
 - Simulator-Konfiguration
 
+**[TABELLENSTRUKTUR.md](./TABELLENSTRUKTUR.md)** - Datenbank-Tabellenstruktur
+- Haupttabelle für Time-Series Daten
+- Metadaten-Tabelle für Node-Informationen
+- Musterdaten und CSV-Format
+- Datenvolumen-Schätzungen
+
+**[SERVER-DEBUGGING-GUIDE.md](./SERVER-DEBUGGING-GUIDE.md)** - Debugging-Anleitung ✨ NEU
+- **Wichtigste Erkenntnisse** (Container-Namen, PKI-Pfade, Security)
+- Debugging-Befehle (Logs, Zertifikate, Sessions)
+- Häufige Probleme und Lösungen
+- Monitoring-Checkliste
+- Nützliche Skripte
+
+**[example-certs/](./example-certs/)** - Vorgenerierte Client-Zertifikate ✨ NEU
+- **Separate Zertifikate für verschiedene Anwendungen**
+- Streamlit/Web-UI Zertifikat
+- Data Collector Zertifikat
+- Test Client Zertifikat
+- **Warum separate Zertifikate?** → Verhindert Session-Konflikte
+
 ---
 
 ## 🔌 Quick Start - Client-Verbindung
