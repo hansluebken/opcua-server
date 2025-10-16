@@ -2,6 +2,7 @@
 default_bits = 2048
 distinguished_name = req_distinguished_name
 req_extensions = v3_req
+x509_extensions = v3_ca
 prompt = no
 
 [req_distinguished_name]
@@ -10,7 +11,14 @@ O = Netz-Fabrik
 C = DE
 
 [v3_req]
-keyUsage = critical, digitalSignature, keyEncipherment, dataEncipherment
+basicConstraints = critical,CA:TRUE
+keyUsage = critical, digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
+extendedKeyUsage = clientAuth
+subjectAltName = @alt_names
+
+[v3_ca]
+basicConstraints = critical,CA:TRUE
+keyUsage = critical, digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 extendedKeyUsage = clientAuth
 subjectAltName = @alt_names
 

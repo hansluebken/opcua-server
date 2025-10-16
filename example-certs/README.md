@@ -220,12 +220,14 @@ Falls Sie ein neues Zertifikat für eine andere Anwendung benötigen:
 
 ### 1. OpenSSL Config erstellen
 
+⚠️ **WICHTIG:** Das Zertifikat muss `basicConstraints = critical,CA:TRUE` haben!
+
 ```bash
 cat > my-app-openssl.cnf <<'EOF'
 [req]
 default_bits = 2048
 distinguished_name = req_distinguished_name
-req_extensions = v3_req
+x509_extensions = v3_ca
 prompt = no
 
 [req_distinguished_name]
@@ -233,8 +235,9 @@ CN = Meine OPC-UA Anwendung
 O = Meine Firma
 C = DE
 
-[v3_req]
-keyUsage = critical, digitalSignature, keyEncipherment, dataEncipherment
+[v3_ca]
+basicConstraints = critical,CA:TRUE
+keyUsage = critical, digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 extendedKeyUsage = clientAuth
 subjectAltName = @alt_names
 
@@ -253,7 +256,7 @@ openssl req -x509 -newkey rsa:2048 \
   -out my-app-cert.pem \
   -days 365 -nodes \
   -config my-app-openssl.cnf \
-  -extensions v3_req
+  -extensions v3_ca
 ```
 
 ### 3. Rechte setzen
@@ -324,6 +327,31 @@ sudo mv /opt/opcua/gateway/gateway-pki/rejected/certs/MY-CERT.pem \
 # Gateway neu starten
 docker restart opcua-gateway
 ```
+
+### Problem: "BadCertificateUseNotAllowed" oder TimeoutError
+
+**Ursache:** Zertifikat hat nicht die richtigen Extensions (fehlt `CA:TRUE` oder `nonRepudiation`)
+
+**Server-Logs zeigen:**
+```
+Sender Certificate Error BadCertificateUseNotAllowed (0x80180000)
+{ description: 'certificate invalid' }
+```
+
+**Diagnose:**
+```bash
+# Prüfe Zertifikat-Extensions
+openssl x509 -in my-cert.pem -text -noout | grep -A 5 "Basic Constraints"
+openssl x509 -in my-cert.pem -text -noout | grep -A 3 "Key Usage"
+```
+
+**Das Zertifikat MUSS haben:**
+- `X509v3 Basic Constraints: critical, CA:TRUE` ✅
+- `X509v3 Key Usage: critical, Digital Signature, Non Repudiation, Key Encipherment, Data Encipherment` ✅
+- `X509v3 Extended Key Usage: TLS Web Client Authentication` ✅
+- `X509v3 Subject Alternative Name: URI:...` ✅
+
+**Lösung:** Zertifikat neu erstellen mit korrekter OpenSSL-Config (siehe "Eigene Zertifikate erstellen" oben)
 
 ---
 
